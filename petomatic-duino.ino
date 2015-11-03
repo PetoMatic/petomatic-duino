@@ -39,13 +39,20 @@ int readWeight() {
   }
   int mean = wRead / i;
 
-  Serial.println(mean);
+  float grams = sensorToGrams(mean);
+
+  Serial.println(grams);
  
   // we'll need to change the range from the analog reading (0-1023) down to the range
   // used by analogWrite (0-255) with map!
   LEDbrightness = map(fsrReading, 0, 1023, 0, 255);
   // LED gets brighter the harder you press
   analogWrite(LEDpin, LEDbrightness);
+}
+
+int sensorToGrams(int mean) {
+  float grams = 15.311 * exp(0.005199 * mean);
+  return grams;
 }
 
 int readTag() {
