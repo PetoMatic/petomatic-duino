@@ -142,6 +142,16 @@ int LEDbrightness;
 void setup(void) {
   Serial.begin(9600);   // We'll send debugging information via the Serial monitor
   pinMode(LEDpin, OUTPUT);
+
+  // start the SPI library:
+  SPI.begin();
+
+  pinMode(chipSelectPin, OUTPUT);            // Set digital pin 10 as OUTPUT to connect it to the RFID /ENABLE pin
+  digitalWrite(chipSelectPin, LOW);          // Activate the RFID reader
+  pinMode(NRSTPD, OUTPUT);              // Set digital pin 5 , Not Reset and Power-down
+  digitalWrite(NRSTPD, HIGH);
+
+  MFRC522_Init();
 }
 
 void loop(void) {
