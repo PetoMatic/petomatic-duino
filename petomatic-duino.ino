@@ -155,40 +155,6 @@ void setup(void) {
 }
 
 void loop(void) {
-
-  uchar i, tmp;
-  uchar status;
-  uchar str[MAX_LEN];
-  uchar RC_size;
-  uchar blockAddr;  //Select operation buck address  0 - 63
-  String mynum = "";
-
-
-  //Search card, return card types
-  status = MFRC522_Request(PICC_REQIDL, str);
-
-  //Prevent conflict, return the 4 bytes Serial number of the card
-  status = MFRC522_Anticoll(str);
-  memcpy(serNum, str, 5);
-  if (status == MI_OK)
-  {
-
-    Serial.println("The card's number is  : ");
-    Serial.println(serNum[0]);
-
-    // Should really check all pairs, but for now we'll just use the first
-
-    if (serNum[0] == 194) {
-      Serial.println("Hello Pulgas");
-    } else if (serNum[0] == 106) {
-      Serial.println("Hello Benito");
-    }
-    Serial.println();
-    delay(1000);
-  }
-  
-  MFRC522_Halt();     //command the card into sleep mode
-
   if (Serial.available()) {
     switch (Serial.read()) {
       case 't':
@@ -227,7 +193,40 @@ int sensorToGrams(int mean) {
 }
 
 int readTag() {
-  return 0;
+  uchar i, tmp;
+  uchar status;
+  uchar str[MAX_LEN];
+  uchar RC_size;
+  uchar blockAddr;  //Select operation buck address  0 - 63
+  String mynum = "";
+
+
+  //Search card, return card types
+  while ((status = MFRC522_Request(PICC_REQIDL, str) != MI_OK))
+  {
+     delay(50);
+  }
+
+
+  //Prevent conflict, return the 4 bytes Serial number of the card
+  status = MFRC522_Anticoll(str);
+  memcpy(serNum, str, 5);
+  if (status == MI_OK)
+  {
+    Serial.println(serNum[0]);
+
+    // Should really check all pairs, but for now we'll just use the first
+/*
+    if (serNum[0] == 194) {
+      Serial.println("Hello Pulgas");
+    } else if (serNum[0] == 106) {
+      Serial.println("Hello Benito");
+    }
+    Serial.println();*/
+    delay(1000);
+  }
+
+  MFRC522_Halt();     //command the card into sleep mode
 }
 
 /*
