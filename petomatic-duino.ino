@@ -202,18 +202,26 @@ int readTag() {
 
 
   //Search card, return card types
+  int timeout = 0;
+  int pause = 50;
   while ((status = MFRC522_Request(PICC_REQIDL, str) != MI_OK))
   {
-     delay(50);
+     delay(pause);
+     timeout += pause;
+     
+     if (timeout > 1500) {
+       Serial.print(0);
+       break;
+     }
   }
-
+  
 
   //Prevent conflict, return the 4 bytes Serial number of the card
   status = MFRC522_Anticoll(str);
   memcpy(serNum, str, 5);
   if (status == MI_OK)
   {
-    Serial.println(serNum[0]);
+    Serial.print(serNum[0]);
 
     // Should really check all pairs, but for now we'll just use the first
 /*
@@ -225,7 +233,7 @@ int readTag() {
     Serial.println();*/
     delay(1000);
   }
-
+  
   MFRC522_Halt();     //command the card into sleep mode
 }
 
