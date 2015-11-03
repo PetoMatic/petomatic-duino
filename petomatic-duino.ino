@@ -17,15 +17,37 @@ void setup(void) {
 }
  
 void loop(void) {
-  fsrReading = analogRead(fsrAnalogPin);
-  Serial.print("Analog reading = ");
-  Serial.println(fsrReading);
+  
+  if (Serial.available()) {
+    switch (Serial.read()) {
+      case 't':
+        readTag();
+        break;
+      case 'w':
+        int weight = readWeight();
+        break;
+    }
+  }
+}
+
+int readWeight() {
+  int wRead = 0;
+  int i = 0;
+  for (i = 0; i < 10; i++) {
+    wRead += analogRead(fsrAnalogPin);
+    delay(10);
+  }
+  int mean = wRead / i;
+
+  Serial.println(mean);
  
   // we'll need to change the range from the analog reading (0-1023) down to the range
   // used by analogWrite (0-255) with map!
   LEDbrightness = map(fsrReading, 0, 1023, 0, 255);
   // LED gets brighter the harder you press
   analogWrite(LEDpin, LEDbrightness);
- 
-  delay(100);
+}
+
+int readTag() {
+   return 0; 
 }
